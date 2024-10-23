@@ -1,0 +1,4 @@
+# Dockerfile for Elasticsearch
+FROM docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+
+COPY elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml

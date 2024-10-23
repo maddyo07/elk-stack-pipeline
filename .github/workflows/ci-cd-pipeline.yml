@@ -11,29 +11,29 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Updated to a newer version
+        uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build and Push Elasticsearch Image
         run: |
-          docker build -t vivekdhole96/elasticsearch:8.9.0 .  # Use current directory
+          docker build -t vivekdhole96/elasticsearch:8.9.0 -f Dockerfile.elasticsearch . 
           docker push vivekdhole96/elasticsearch:8.9.0
 
       - name: Build and Push Logstash Image
         run: |
-          docker build -t vivekdhole96/logstash:8.9.0 .  # Use current directory
+          docker build -t vivekdhole96/logstash:8.9.0 -f Dockerfile.logstash . 
           docker push vivekdhole96/logstash:8.9.0
 
       - name: Build and Push Kibana Image
         run: |
-          docker build -t vivekdhole96/kibana:8.9.0 .  # Use current directory
+          docker build -t vivekdhole96/kibana:8.9.0 -f Dockerfile.kibana . 
           docker push vivekdhole96/kibana:8.9.0
 
       - name: Build and Push Grafana Image
         run: |
-          docker build -t vivekdhole96/grafana:latest .  # Use current directory
+          docker build -t vivekdhole96/grafana:latest -f Dockerfile.grafana . 
           docker push vivekdhole96/grafana:latest
 
   deploy:
@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Updated to a newer version
+        uses: actions/checkout@v3
 
       - name: Deploy Docker Compose Stack
         run: |
