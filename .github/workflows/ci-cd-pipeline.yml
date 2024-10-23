@@ -1,0 +1,54 @@
+name: CI/CD Pipeline for ELK Stack and Grafana
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and Push Elasticsearch Image
+        run: |
+          docker build -t vivekdhole96/elasticsearch:8.9.0 ./elasticsearch
+          docker push vivekdhole96/elasticsearch:8.9.0
+
+      - name: Build and Push Logstash Image
+        run: |
+          docker build -t vivekdhole96/logstash:8.9.0 ./logstash
+          docker push vivekdhole96/logstash:8.9.0
+
+      - name: Build and Push Kibana Image
+        run: |
+          docker build -t vivekdhole96/kibana:8.9.0 ./kibana
+          docker push vivekdhole96/kibana:8.9.0
+
+      - name: Build and Push Grafana Image
+        run: |
+          docker build -t vivekdhole96/grafana:latest ./grafana
+          docker push vivekdhole96/grafana:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy Docker Compose Stack
+        run: |
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d

@@ -1,13 +1,13 @@
 version: '3.8'
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    image: vivekdhole96/elasticsearch:8.9.0  # Pull from Docker Hub
     container_name: elasticsearch
     environment:
       - node.name=es01
       - cluster.name=es-docker-cluster
       - discovery.type=single-node
-      - xpack.security.enabled=false  # Disable security features
+      - xpack.security.enabled=false
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -20,7 +20,7 @@ services:
       - es_data:/usr/share/elasticsearch/data
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.9.0
+    image: vivekdhole96/logstash:8.9.0  # Pull from Docker Hub
     container_name: logstash
     volumes:
       - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
@@ -34,18 +34,18 @@ services:
       - elasticsearch
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.9.0
+    image: vivekdhole96/kibana:8.9.0  # Pull from Docker Hub
     container_name: kibana
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - xpack.security.enabled=false  # Disable security features
+      - xpack.security.enabled=false
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
 
   grafana:
-    image: grafana/grafana:latest
+    image: vivekdhole96/grafana:latest  # Pull from Docker Hub
     container_name: grafana
     ports:
       - "3000:3000"
